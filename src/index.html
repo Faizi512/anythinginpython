@@ -79,7 +79,7 @@
 
       const updateBoard = (board) => {
         cells.forEach((cell, index) => {
-          cell.textContent = board[index];
+          cell.textContent = board[index] || '';
         });
       };
 
