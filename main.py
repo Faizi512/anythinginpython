@@ -75,9 +75,22 @@ def make_move():
         game_state['status'] = 'draw'
         game_state['message'] = "It's a draw!"
     else:
+        # Set the message for the next player's turn
         game_state['current_player'] = 3 - game_state['current_player']  # Switch player (1 becomes 2, 2 becomes 1)
+        player_char = 'X' if game_state['current_player'] == 1 else 'O'
+        game_state['message'] = f"Player {player_char}'s turn"
 
-    return jsonify(game_state)
+    # Convert numerical board representation to 'X', 'O', or '' for the frontend
+    display_board = ['' if cell == 0 else 'X' if cell == 1 else 'O' for cell in game_state['board']] # This line was already correct
+    response_data = game_state.copy()
+    response_data['board'] = display_board
+    return jsonify(response_data)
+
+@app.route("/reset", methods=["POST"])
+def reset_game():
+    """Resets the game state."""
+    initialize_game()
+    return jsonify({"status": "reset succeeded"})
 def main():
     app.run(port=int(os.environ.get('PORT', 80)))
 
