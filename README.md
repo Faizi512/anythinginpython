@@ -1,7 +1,9 @@
-# Flask Web App Starter
+# Flask Tic Tac Toe
 
-A Flask starter template as per [these docs](https://flask.palletsprojects.com/en/3.0.x/quickstart/#a-minimal-application).
+A simple web-based Tic Tac Toe game built with Flask.
 
 ## Getting Started
 
-Previews should run automatically when starting a workspace.
+1.  Clone the repository (if applicable to your setup).
+2.  Navigate to the project directory.
+3.  Install the required Python dependencies:
