@@ -25,15 +25,15 @@
     <h1>Tic Tac Toe</h1>
     <div id="status"></div>
     <div class="board" id="board">
-      <div class="cell" data-index="0"></div>
-      <div class="cell" data-index="1"></div>
-      <div class="cell" data-index="2"></div>
-      <div class="cell" data-index="3"></div>
-      <div class="cell" data-index="4"></div>
-      <div class="cell" data-index="5"></div>
-      <div class="cell" data-index="6"></div>
-      <div class="cell" data-index="7"></div>
-      <div class="cell" data-index="8"></div>
+      <div class="cell" data-index="0"><span></span></div>
+      <div class="cell" data-index="1"><span></span></div>
+      <div class="cell" data-index="2"><span></span></div>
+      <div class="cell" data-index="3"><span></span></div>
+      <div class="cell" data-index="4"><span></span></div>
+      <div class="cell" data-index="5"><span></span></div>
+      <div class="cell" data-index="6"><span></span></div>
+      <div class="cell" data-index="7"><span></span></div>
+      <div class="cell" data-index="8"><span></span></div>
     </div>
     <button id="reset">Reset Game</button>
 
@@ -66,6 +66,7 @@
         .then(response => response.json())
         .then(data => {
           if (data.status === 'succeeded') {
+            console.log('Received board data:', data.board);
             updateBoard(data.board);
             updateStatus(data.message);
             if (data.winner || data.draw) {
@@ -79,7 +80,8 @@
 
       const updateBoard = (board) => {
         cells.forEach((cell, index) => {
-          cell.textContent = board[index] || '';
+          const span = cell.querySelector('span');
+          if (span) {span.textContent = board[index] || '';}
         });
       };
 

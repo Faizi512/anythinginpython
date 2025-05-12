@@ -62,6 +62,8 @@ def make_move():
     data = request.json
     cell = data.get('index')
 
+    print(f"Received move for cell: {cell}")
+
     if cell is None or not (0 <= cell < 9) or game_state['board'][cell] != 0:
         return jsonify({"status": "invalid move", "message": "Invalid move."})
 
@@ -81,9 +83,7 @@ def make_move():
         game_state['message'] = f"Player {player_char}'s turn"
 
     # Convert numerical board representation to 'X', 'O', or '' for the frontend
-    display_board = ['' if cell == 0 else 'X' if cell == 1 else 'O' for cell in game_state['board']] # This line was already correct
-    response_data = game_state.copy()
-    response_data['board'] = display_board
+    response_data = {'board': ['' if cell == 0 else 'X' if cell == 1 else 'O' for cell in game_state['board']], 'message': game_state.get('message', ''), 'status': game_state['status'], 'winner': game_state.get('winner'), 'draw': game_state.get('draw')}
     return jsonify(response_data)
 
 @app.route("/reset", methods=["POST"])
