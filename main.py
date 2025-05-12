@@ -48,11 +48,10 @@ def index():
 
 @app.route("/board", methods=["GET"])
 def get_board(): 
- """Returns the current state of the game board and current player.""" 
     return jsonify(game_state)
 
 @app.route("/move", methods=["POST"])
-
+def make_move():
     """Handles a player's move."""
     global game_state
 
@@ -66,22 +65,19 @@ def get_board():
     if cell is None or not (0 <= cell < 9) or game_state['board'][cell] != 0:
         return jsonify({"status": "invalid move", "message": "Invalid move."})
 
-
-    
-        game_state['board'][cell] = game_state['current_player']
+    game_state['board'][cell] = game_state['current_player']
 
     if check_win(game_state['current_player']):
-            game_state['status'] = 'win'
-            game_state['winner'] = game_state['current_player']
-            game_state['message'] = f"Player {game_state['current_player']} wins!"
+        game_state['status'] = 'win'
+        game_state['winner'] = game_state['current_player']
+        game_state['message'] = f"Player {game_state['current_player']} wins!"
     elif check_draw():
-            game_state['status'] = 'draw'
-            game_state['message'] = "It's a draw!"
-            game_state['current_player'] = 3 - game_state['current_player']  # Switch player (1 becomes 2, 2 becomes 1)
-            return jsonify(game_state)
+        game_state['status'] = 'draw'
+        game_state['message'] = "It's a draw!"
     else:
-        return jsonify({"status": "invalid move"})
+        game_state['current_player'] = 3 - game_state['current_player']  # Switch player (1 becomes 2, 2 becomes 1)
 
+    return jsonify(game_state)
 def main():
     app.run(port=int(os.environ.get('PORT', 80)))
 
