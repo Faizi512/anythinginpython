@@ -47,13 +47,11 @@ def index():
     return send_file('src/index.html')
 
 @app.route("/board", methods=["GET"])
-def get_board():
-    """Returns the current state of the game board and current player."""
+def get_board(): 
+ """Returns the current state of the game board and current player.""" 
     return jsonify(game_state)
 
-@app.route("/move/<int:cell>", methods=["POST"])
-def make_move(cell):
-    global current_player
+@app.route("/move", methods=["POST"])
 
     """Handles a player's move."""
     global game_state
@@ -62,27 +60,23 @@ def make_move(cell):
     if game_state['status'] != 'playing':
         return jsonify({"status": "game finished", "message": "Please reset the game"})
 
-    if 0 <= cell < 9 and board[cell] == 0:
-        board[cell] = current_player
-    if 0 <= cell < 9 and game_state['board'][cell] == 0:
+    data = request.json
+    cell = data.get('index')
+
+    if cell is None or not (0 <= cell < 9) or game_state['board'][cell] != 0:
+        return jsonify({"status": "invalid move", "message": "Invalid move."})
+
+
+    
         game_state['board'][cell] = game_state['current_player']
 
-        if check_win(current_player):
-            reset_game()
-            return jsonify({"status": "win", "winner": current_player})
-        elif check_draw():
-            reset_game()
-            return jsonify({"status": "draw"})
-        if check_win(game_state['current_player']):
+    if check_win(game_state['current_player']):
             game_state['status'] = 'win'
             game_state['winner'] = game_state['current_player']
-            return jsonify(game_state)
-        elif check_draw():
+            game_state['message'] = f"Player {game_state['current_player']} wins!"
+    elif check_draw():
             game_state['status'] = 'draw'
-            return jsonify(game_state)
-        else:
-            current_player = 3 - current_player  # Switch player (1 becomes 2, 2 becomes 1)
-            return jsonify({"status": "success", "board": board, "current_player": current_player})
+            game_state['message'] = "It's a draw!"
             game_state['current_player'] = 3 - game_state['current_player']  # Switch player (1 becomes 2, 2 becomes 1)
             return jsonify(game_state)
     else:
