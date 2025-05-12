@@ -44,18 +44,8 @@
 
       let gameActive = true;
 
-      const handleCellClick = (e) => {
-        const clickedCell = e.target;
-        const clickedCellIndex = parseInt(clickedCell.getAttribute('data-index'));
-
-        if (!gameActive || clickedCell.textContent !== '') {
-          return;
-        }
-
-        makeMove(clickedCellIndex);
-      };
-
       const makeMove = (index) => {
+        console.log('Making move for index:', index);
         fetch('/move', {
           method: 'POST',
           headers: {
@@ -65,7 +55,8 @@
         })
         .then(response => response.json())
         .then(data => {
-          if (data.status === 'succeeded') {
+          if (data.status === 'playing' || 'win') {
+            console.log('Player who just moved:', data.current_player);
             console.log('Received board data:', data.board);
             updateBoard(data.board);
             updateStatus(data.message);
@@ -73,9 +64,23 @@
               gameActive = false;
             }
           } else {
+            console.log('Cell clicked!2', data.status);
             updateStatus(data.message);
           }
         });
+      };
+
+      const handleCellClick = (e) => {
+        console.log('Cell clicked!');
+        const clickedCell = e.target;
+        const clickedCellIndex = parseInt(clickedCell.getAttribute('data-index'));
+        console.log("============", clickedCellIndex)
+        
+        if (!gameActive || clickedCell.textContent !== '') {
+          return;
+        }
+        makeMove(clickedCellIndex);
+
       };
 
       const updateBoard = (board) => {
